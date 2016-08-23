@@ -22,6 +22,9 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_Rattletrap_Hookshot);
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
+
             Radius = ability?.GetRadius(ability.Name) ?? 125;
             if (ability != null && ability.Level > 0)
             {

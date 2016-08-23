@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 namespace Evade.Obstacles.Particles
 {
     using Ensage;
@@ -12,6 +13,9 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_Phoenix_LaunchFireSpirit);
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
+
             Radius = ability?.GetRadius(ability.Name) ?? 175;
             ID = pathfinding.AddObstacle(Position, Radius);
             Debugging.WriteLine("Adding FireSpirit particle: {0}", Radius);

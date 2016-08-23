@@ -19,6 +19,8 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.Name == "elder_titan_echo_stomp");
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
 
             Radius = ability?.GetRadius(ability.Name) ?? 500;
             _delay = 1.6f;

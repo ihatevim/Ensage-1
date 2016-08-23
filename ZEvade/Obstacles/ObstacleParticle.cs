@@ -29,6 +29,7 @@
         public virtual Vector3 EndPosition => Position;
         public virtual Vector3 CurrentPosition => Position;
         public abstract float Radius { get; }
+        public virtual float EndRadius => Radius;
         public virtual bool IsValid => ParticleEffect.IsValid;
         public virtual float TimeLeft => 1;
         public virtual bool UseCurrentPosition => true;

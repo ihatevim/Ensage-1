@@ -1,4 +1,5 @@
 ﻿using System;
+using Ensage;
 
 namespace Evade
 {
@@ -15,7 +16,7 @@ namespace Evade
             Ensage.Common.Events.OnLoad += Events_OnLoad;
             Ensage.Common.Events.OnClose += Events_OnClose;
 
-
+           
             //foreach (var hero   in ObjectManager.GetEntities<Hero>())
             //{
             //    Console.WriteLine("{0}:",hero.Name);

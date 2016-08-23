@@ -22,6 +22,9 @@ namespace Evade.Obstacles.Particles
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_Gyrocopter_Call_Down);
 
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
+
             Radius = ability?.GetRadius(ability.Name) ?? 600;
             if (first)
             {

@@ -21,11 +21,15 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_Pudge_MeatHook);
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
+
             Radius = ability?.GetRadius(ability.Name) + 8 ?? 108;
             if (ability != null && ability.Level > 0)
             {
                 _range = ability.GetRange(ability.Level - 1) + Radius;
             }
+            Radius /= 2; // Left and right is only halfs
             
             var special = ability?.AbilitySpecialData.FirstOrDefault(x => x.Name == "hook_speed");
             if (special != null)
@@ -72,5 +76,7 @@ namespace Evade.Obstacles.Particles
         public override float Radius { get; }
 
         public override float TimeLeft => Math.Max(0, (Started + _range/_speed) - Game.RawGameTime);
+
+        public override bool IsValid => base.IsValid && TimeLeft > 0.1;
     }
 }

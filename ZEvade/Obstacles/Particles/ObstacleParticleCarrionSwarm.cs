@@ -21,28 +21,34 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_DeathProphet_CarrionSwarm);
-            Radius = ability?.GetRadius(ability.Name) ?? 300;
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
 
-            var special = ability?.AbilitySpecialData.FirstOrDefault(x => x.Name == "start_radius");
-            if (special != null)
-                _startRadius = special.Value;
-        
+            var specialStart = ability?.AbilitySpecialData.FirstOrDefault(x => x.Name == "start_radius");
+            if (specialStart != null)
+                _startRadius = specialStart.Value + 8;
+
+            var specialEnd = ability?.AbilitySpecialData.FirstOrDefault(x => x.Name == "end_radius");
+            if (specialEnd != null)
+                _endRadius = specialEnd.Value + 8;
+
             var special1 = ability?.AbilitySpecialData.FirstOrDefault(x => x.Name == "range");
             var special2 = ability?.AbilitySpecialData.FirstOrDefault(x => x.Name == "speed");
             if (special1 != null && special2 != null)
             {
-                _range = special1.Value + Radius + _startRadius;
+                _range = special1.Value + _startRadius/2 + _endRadius/2;
 
                 _speed = special2.Value;
                 _delay = _range / _speed;
             }
 
-            ID = pathfinding.AddObstacle(Position, EndPosition, Radius);
-            Debugging.WriteLine("Adding CarionSwarm particle: {0} - {1}", Radius,_delay);
+            ID = pathfinding.AddObstacle(Position, EndPosition, _startRadius, _endRadius);
+            Debugging.WriteLine("Adding CarionSwarm particle: {0} - {1} - {2}", _startRadius, _endRadius, _delay);
         }
 
-        private readonly float _startRadius = 110;
-        private readonly float _speed = 1100;
+        private readonly float _startRadius = 118;
+        private readonly float _endRadius = 300;
+        private readonly float _speed = 1108;
         private readonly float _range = 810 + 300 + 110;
         private readonly float _delay = 810.0f / 1100.0f;
 
@@ -73,8 +79,10 @@ namespace Evade.Obstacles.Particles
                 direction *= _range;
                 return startPosition + direction;
             }
-        } 
-        public override float Radius { get; }
+        }
+
+        public override float Radius => _startRadius;
+        public override float EndRadius => _endRadius;
 
         public override bool IsValid => base.IsValid && Game.RawGameTime < Started + _delay;
 

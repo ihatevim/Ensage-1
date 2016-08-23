@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Evade.Obstacles.Particles
 {
@@ -20,6 +21,8 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_Shredder_Chakram);
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
 
             Radius = ability?.GetRadius(ability.Name) ?? 675;
 

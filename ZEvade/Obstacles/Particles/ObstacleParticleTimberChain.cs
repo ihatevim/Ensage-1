@@ -22,11 +22,15 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_Shredder_TimberChain);
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
+
             Radius = ability?.GetRadius(ability.Name) + 8 ?? 98;
             if (ability != null && ability.Level > 0)
             {
                 _range = ability.GetRange(ability.Level - 1) + Radius;
             }
+            Radius /= 2;
             ID = pathfinding.AddObstacle(Position, EndPosition, Radius);
             Debugging.WriteLine("Adding TimberChain particle: {0} - {1}", Radius, _range);
         }

@@ -17,6 +17,9 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_Invoker_EMP);
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
+
             Radius = ability?.GetRadius(ability.Name) ?? 675;
 
             _delay = 2.9f;
@@ -34,7 +37,7 @@ namespace Evade.Obstacles.Particles
 
         public override float Radius { get; }
 
-        public override bool IsValid => base.IsValid && Game.RawGameTime <= (Started + _delay);
+        public override bool IsValid => base.IsValid && TimeLeft > 0; // Game.RawGameTime <= (Started + _delay);
 
         public override float TimeLeft => Math.Max(0, (Started + _delay) - Game.RawGameTime);
     }

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Linq;
 namespace Evade.Obstacles.Particles
 {
@@ -13,6 +14,9 @@ namespace Evade.Obstacles.Particles
             var ability =
                 ObjectManager.GetEntities<Ability>()
                     .FirstOrDefault(x => x.ClassID == ClassID.CDOTA_Ability_AncientApparition_IceBlast);
+            if (ability?.Owner.Team == ObjectManager.LocalHero.Team)
+                throw new Exception();
+
             Radius = ability?.GetRadius(ability.Name) ?? 600;
             ID = pathfinding.AddObstacle(Position, Radius);
             Debugging.WriteLine("Adding IceBlast particle: {0}", Radius);
