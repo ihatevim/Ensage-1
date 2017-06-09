@@ -71,7 +71,7 @@ namespace Zaio.Heroes
 
                     if (target.IsMoving)
                     {
-                        if (pos != Vector3.Zero && pos.Distance2D(MyHero) <= range && rec.IsInside(pos))
+                        if (pos != Vector3.Zero && pos.Distance2D(MyHero) <= range && rec.IsInside(pos) && MyHero.FindRelativeAngle(staticPos) <= 1.57)
                         {
                             Log.Debug($"using Q");
                             _purgeAbility.UseAbility();
