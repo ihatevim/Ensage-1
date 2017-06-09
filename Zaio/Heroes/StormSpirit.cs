@@ -120,34 +120,36 @@ namespace Zaio.Heroes
             _eAutoDamage += (MyHero.MinimumDamage + MyHero.BonusDamage);
             _eAutoDamage *= GetSpellAmp();
 
-            if (this._qAbility.IsKillstealAbilityEnabled() && this._qAbility.CanBeCasted())
-            {
-                var qAutokillableTar =
-                                ObjectManager.GetEntitiesParallel<Hero>()
-                                             .FirstOrDefault(
-                                                 x =>
-                                                     x.IsAlive && x.Team != this.MyHero.Team && !x.IsIllusion
-                                                     && this._qAbility.CanBeCasted() && this._qAbility.CanHit(x) 
-                                                     && x.Health < (_qAutoDamage * (1 - x.MagicResistance()))
-                                                     && !x.IsMagicImmune() && !x.CantBeKilled() && !x.CantBeAttacked()
-                                                     && x.Distance2D(this.MyHero) <= 235);
-
-                var AutokillableTar =
+            var qAutokillableTar =
                 ObjectManager.GetEntitiesParallel<Hero>()
                              .FirstOrDefault(
                                  x =>
                                      x.IsAlive && x.Team != this.MyHero.Team && !x.IsIllusion
-                                     && x.Health < _eAutoDamage * (1 - x.MagicResistance())
+                                     && this._qAbility.CanBeCasted() && this._qAbility.CanHit(x)
+                                     && x.Health < (_qAutoDamage * (1 - x.MagicResistance()))
                                      && !x.IsMagicImmune() && !x.CantBeKilled() && !x.CantBeAttacked()
-                                     && x.Distance2D(this.MyHero) <= 480);
+                                     && x.Distance2D(this.MyHero) <= 235);
 
-                if (this.MyHero.HasModifier("modifier_storm_spirit_overload") && AutokillableTar != null)
-                {
-                    MyHero.Attack(AutokillableTar);
-                    Await.Block("zaioAutoAttack", StormAuto);
-                }
+            var AutokillableTar =
+            ObjectManager.GetEntitiesParallel<Hero>()
+                         .FirstOrDefault(
+                             x =>
+                                 x.IsAlive && x.Team != this.MyHero.Team && !x.IsIllusion
+                                 && x.Health < _eAutoDamage * (1 - x.MagicResistance())
+                                 && !x.IsMagicImmune() && !x.CantBeKilled() && !x.CantBeAttacked()
+                                 && x.Distance2D(this.MyHero) <= 480);
 
-                if (AutokillableTar != null && _qAbility.CanBeCasted() && !MyHero.HasModifier("modifier_storm_spirit_overload"))
+
+            if (this.MyHero.HasModifier("modifier_storm_spirit_overload") && AutokillableTar != null)
+            {
+                MyHero.Attack(AutokillableTar);
+                Await.Block("zaioAutoAttack", StormAuto);
+            }
+
+            if (this._qAbility.IsKillstealAbilityEnabled() && this._qAbility.CanBeCasted() && !MyHero.HasModifier("modifier_storm_spirit_overload"))
+            {
+
+                if (AutokillableTar != null && _qAbility.CanBeCasted())
                 {
                     Log.Debug($"Killing with auto {MyHero.HasModifier("modifier_storm_spirit_overload")}");
                     _qAbility.UseAbility();
@@ -157,7 +159,7 @@ namespace Zaio.Heroes
 
                 }
 
-                if (AutokillableTar != null && _ultAbility.CanBeCasted() && !_qAbility.CanBeCasted() && !MyHero.HasModifier("modifier_storm_spirit_overload"))
+                if (AutokillableTar != null && _ultAbility.CanBeCasted() && !_qAbility.CanBeCasted())
                 {
                     var moves = Cock.InFront(AutokillableTar, 50);
                     Log.Debug($"Killable with auto, q not available {MyHero.HasModifier("modifier_storm_spirit_overload")}");
