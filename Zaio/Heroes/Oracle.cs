@@ -190,7 +190,7 @@
                                  x.IsAlive && x.Team != this.MyHero.Team && !x.IsIllusion
                                  && this._eAbility.CanBeCasted() && !x.IsMagicImmune()
                                  && x.Health < damage * (1 - x.MagicResistance())
-                                 && !x.CantBeKilled());
+                                 && !x.CantBeKilled() && this._eAbility.CanHit(x));
                 if (enemy != null)
                 {
                     Log.Debug($"Killstealing");
