@@ -55,6 +55,13 @@ namespace Zaio.Heroes
 
         public override async Task ExecuteComboAsync(Unit target, CancellationToken tk = new CancellationToken())
         {
+            // check if we are near the enemy
+            if (!await MoveOrBlinkToEnemy(target, tk, 150))
+            {
+                Log.Debug($"return because of blink");
+                return;
+            }
+
             if (!MyHero.IsSilenced() && _jumpAbility.IsAbilityEnabled() && _jumpAbility.CanBeCasted(target))
             {
                 var radius = _jumpAbility.GetAbilityData("pounce_radius");
@@ -62,15 +69,36 @@ namespace Zaio.Heroes
                 var time = MyHero.Distance2D(target) / _jumpAbility.GetAbilityData("pounce_speed");
                 var pos = Prediction.Prediction.PredictPosition(target, (int) (time * 1000.0f), true);
                 var rec = new Geometry.Polygon.Rectangle(MyHero.NetworkPosition, MyHero.InFront(range), radius);
-                if (pos != Vector3.Zero && pos.Distance2D(MyHero) <= range && rec.IsInside(pos))
+                var myHeroNetworkPosition = this.MyHero.NetworkPosition;
+                var staticPos = target.NetworkPosition;
+
+
+                if (target.IsMoving)
                 {
-                    Log.Debug($"using Q");
-                    _purgeAbility.UseAbility();
-                    await Await.Delay((int)(_purgeAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
-                    Log.Debug($"using jump");
-                    _jumpAbility.UseAbility();
-                    await Await.Delay((int) (_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                    if (pos != Vector3.Zero && pos.Distance2D(MyHero) <= range && rec.IsInside(pos))
+                    {
+                        Log.Debug($"using Q");
+                        _purgeAbility.UseAbility();
+                        await Await.Delay((int)(_purgeAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                        Log.Debug($"using jump");
+                        _jumpAbility.UseAbility();
+                        await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                    }
                 }
+
+                else
+                {
+                    if (staticPos != Vector3.Zero && staticPos.Distance2D(MyHero) <= range && rec.IsInside(staticPos))
+                    {
+                        Log.Debug($"using Q");
+                        _purgeAbility.UseAbility();
+                        await Await.Delay((int)(_purgeAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                        Log.Debug($"using jump");
+                        _jumpAbility.UseAbility();
+                        await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                    }
+                }
+
             }
 
             if (!MyHero.IsSilenced() && _purgeAbility.IsAbilityEnabled() && _purgeAbility.CanBeCasted(target) && _purgeAbility.CanHit(target) ||
@@ -89,13 +117,6 @@ namespace Zaio.Heroes
             {
                 Log.Debug($"disabled!");
                 // return;
-            }
-
-            // check if we are near the enemy
-            if (!await MoveOrBlinkToEnemy(target, tk))
-            {
-                Log.Debug($"return because of blink");
-                return;
             }
 
             if (ZaioMenu.ShouldUseOrbwalker)
