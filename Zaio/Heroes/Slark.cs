@@ -64,11 +64,15 @@ namespace Zaio.Heroes
                 var rec = new Geometry.Polygon.Rectangle(MyHero.NetworkPosition, MyHero.InFront(range), radius);
                 if (pos != Vector3.Zero && pos.Distance2D(MyHero) <= range && rec.IsInside(pos))
                 {
+                    Log.Debug($"using Q");
+                    _purgeAbility.UseAbility();
+                    await Await.Delay((int)(_purgeAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
                     Log.Debug($"using jump");
                     _jumpAbility.UseAbility();
                     await Await.Delay((int) (_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
                 }
             }
+
             if (!MyHero.IsSilenced() && _purgeAbility.IsAbilityEnabled() && _purgeAbility.CanBeCasted(target) && _purgeAbility.CanHit(target) ||
                 MyHero.IsRooted())
             {
