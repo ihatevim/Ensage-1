@@ -79,7 +79,7 @@ namespace Zaio.Heroes
                     {
                         Log.Debug($"using Q");
                         _purgeAbility.UseAbility();
-                        await Await.Delay((int)(_purgeAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                        await Await.Delay((int)(GetAbilityDelay(_purgeAbility)), tk);
                         Log.Debug($"using jump");
                         _jumpAbility.UseAbility();
                         await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
@@ -92,7 +92,7 @@ namespace Zaio.Heroes
                     {
                         Log.Debug($"using Q");
                         _purgeAbility.UseAbility();
-                        await Await.Delay((int)(_purgeAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                        await Await.Delay((int)(GetAbilityDelay(_purgeAbility)), tk);
                         Log.Debug($"using jump");
                         _jumpAbility.UseAbility();
                         await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
@@ -106,7 +106,7 @@ namespace Zaio.Heroes
             {
                 Log.Debug($"using Q");
                 _purgeAbility.UseAbility();
-                await Await.Delay((int) (_purgeAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                await Await.Delay((int)(GetAbilityDelay(_purgeAbility)), tk);
             }
 
             await HasNoLinkens(target, tk);
