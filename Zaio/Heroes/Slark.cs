@@ -56,50 +56,51 @@ namespace Zaio.Heroes
         public override async Task ExecuteComboAsync(Unit target, CancellationToken tk = new CancellationToken())
         {
             // check if we are near the enemy
-            if (!await MoveOrBlinkToEnemy(target, tk, 150))
+            if (!await MoveOrBlinkToEnemy(target, tk, 150, 150))
             {
+                if (!MyHero.IsSilenced() && _jumpAbility.IsAbilityEnabled() && _jumpAbility.CanBeCasted(target))
+                {
+                    var radius = _jumpAbility.GetAbilityData("pounce_radius");
+                    var range = _jumpAbility.GetAbilityData("pounce_distance");
+                    var time = MyHero.Distance2D(target) / _jumpAbility.GetAbilityData("pounce_speed");
+                    var pos = Prediction.Prediction.PredictPosition(target, (int)(time * 1000.0f), true);
+                    var rec = new Geometry.Polygon.Rectangle(MyHero.NetworkPosition, MyHero.InFront(range), radius);
+                    var myHeroNetworkPosition = this.MyHero.NetworkPosition;
+                    var staticPos = target.NetworkPosition;
+
+
+                    if (target.IsMoving)
+                    {
+                        if (pos != Vector3.Zero && pos.Distance2D(MyHero) <= range && rec.IsInside(pos))
+                        {
+                            Log.Debug($"using Q");
+                            _purgeAbility.UseAbility();
+                            await Await.Delay((int)(GetAbilityDelay(_purgeAbility)), tk);
+                            Log.Debug($"using jump");
+                            _jumpAbility.UseAbility();
+                            await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                        }
+                    }
+
+                    else
+                    {
+                        if (staticPos != Vector3.Zero && staticPos.Distance2D(MyHero) <= range && rec.IsInside(staticPos))
+                        {
+                            Log.Debug($"using Q");
+                            _purgeAbility.UseAbility();
+                            await Await.Delay((int)(GetAbilityDelay(_purgeAbility)), tk);
+                            Log.Debug($"using jump");
+                            _jumpAbility.UseAbility();
+                            await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
+                        }
+                    }
+
+                }
                 Log.Debug($"return because of blink");
                 return;
             }
 
-            if (!MyHero.IsSilenced() && _jumpAbility.IsAbilityEnabled() && _jumpAbility.CanBeCasted(target))
-            {
-                var radius = _jumpAbility.GetAbilityData("pounce_radius");
-                var range = _jumpAbility.GetAbilityData("pounce_distance");
-                var time = MyHero.Distance2D(target) / _jumpAbility.GetAbilityData("pounce_speed");
-                var pos = Prediction.Prediction.PredictPosition(target, (int) (time * 1000.0f), true);
-                var rec = new Geometry.Polygon.Rectangle(MyHero.NetworkPosition, MyHero.InFront(range), radius);
-                var myHeroNetworkPosition = this.MyHero.NetworkPosition;
-                var staticPos = target.NetworkPosition;
-
-
-                if (target.IsMoving)
-                {
-                    if (pos != Vector3.Zero && pos.Distance2D(MyHero) <= range && rec.IsInside(pos))
-                    {
-                        Log.Debug($"using Q");
-                        _purgeAbility.UseAbility();
-                        await Await.Delay((int)(GetAbilityDelay(_purgeAbility)), tk);
-                        Log.Debug($"using jump");
-                        _jumpAbility.UseAbility();
-                        await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
-                    }
-                }
-
-                else
-                {
-                    if (staticPos != Vector3.Zero && staticPos.Distance2D(MyHero) <= range && rec.IsInside(staticPos))
-                    {
-                        Log.Debug($"using Q");
-                        _purgeAbility.UseAbility();
-                        await Await.Delay((int)(GetAbilityDelay(_purgeAbility)), tk);
-                        Log.Debug($"using jump");
-                        _jumpAbility.UseAbility();
-                        await Await.Delay((int)(_jumpAbility.FindCastPoint() * 1000.0f + Game.Ping), tk);
-                    }
-                }
-
-            }
+            
 
             if (!MyHero.IsSilenced() && _purgeAbility.IsAbilityEnabled() && _purgeAbility.CanBeCasted(target) && _purgeAbility.CanHit(target) ||
                 MyHero.IsRooted())
