@@ -25,6 +25,27 @@ namespace Zaio.Heroes
     [Hero(ClassId.CDOTA_Unit_Hero_StormSpirit)]
     internal class StormSpirit : ComboHero
     {
+        public partial class NativeMethods
+        {
+            [System.Runtime.InteropServices.DllImportAttribute("user32.dll", EntryPoint = "BlockInput")]
+            [return: System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.Bool)]
+            public static extern bool BlockInput([System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.Bool)] bool fBlockIt);
+
+        }
+
+        public static void BlockInput(int span)
+        {
+            try
+            {
+                NativeMethods.BlockInput(true);
+                Await.Delay(span);
+            }
+            finally
+            {
+                NativeMethods.BlockInput(false);
+            }
+        }
+
         private static readonly ILog Log = AssemblyLogs.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly string[] SupportedAbilities =
@@ -143,6 +164,7 @@ namespace Zaio.Heroes
             if (this.MyHero.HasModifier("modifier_storm_spirit_overload") && AutokillableTar != null)
             {
                 MyHero.Attack(AutokillableTar);
+                BlockInput(900);
                 Await.Block("zaioAutoAttack", StormAuto);
             }
 
