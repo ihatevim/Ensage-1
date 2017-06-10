@@ -146,20 +146,6 @@ namespace Zaio.Heroes
                 Await.Block("zaioAutoAttack", StormAuto);
             }
 
-            if (this._ultAbility.IsKillstealAbilityEnabled() && this._ultAbility.CanBeCasted() && !MyHero.HasModifier("modifier_storm_spirit_overload"))
-            {
-                if (AutokillableTar != null && _ultAbility.CanBeCasted() && !_qAbility.CanBeCasted())
-                {
-                    var moves = Cock.InFront(AutokillableTar, 50);
-                    Log.Debug($"Killable with auto, q not available {MyHero.HasModifier("modifier_storm_spirit_overload")}");
-                    _ultAbility.UseAbility(moves);
-                    await Await.Delay(GetAbilityDelay(_ultAbility));
-                    MyHero.Attack(AutokillableTar);
-                    Await.Block("zaioAutoAttack", StormAuto);
-                }
-            }
-
-
             if (this._qAbility.IsKillstealAbilityEnabled() && this._qAbility.CanBeCasted() && !MyHero.HasModifier("modifier_storm_spirit_overload"))
             {
 
@@ -167,7 +153,7 @@ namespace Zaio.Heroes
                 {
                     Log.Debug($"Killing with auto {MyHero.HasModifier("modifier_storm_spirit_overload")}");
                     _qAbility.UseAbility();
-                    await Await.Delay(GetAbilityDelay(_qAbility));
+                    await Await.Delay(300);
                     MyHero.Attack(AutokillableTar);
                     Await.Block("zaioAutoAttack", StormAuto);
 
@@ -177,13 +163,27 @@ namespace Zaio.Heroes
                 {
                     Log.Debug($"Killing with q and auto");
                     _qAbility.UseAbility();
-                    await Await.Delay(GetAbilityDelay(_qAbility));
+                    await Await.Delay(300);
                     MyHero.Attack(qAutokillableTar);
                     Await.Block("zaioAutoAttack", StormAuto);
                 }
 
             }
-                
+
+            if (this._ultAbility.IsKillstealAbilityEnabled() && this._ultAbility.CanBeCasted() && !MyHero.HasModifier("modifier_storm_spirit_overload"))
+            {
+                if (AutokillableTar != null && _ultAbility.CanBeCasted() && !_qAbility.CanBeCasted())
+                { 
+                    var moves = Cock.InFront(AutokillableTar, 100);
+                    Log.Debug($"Killable with auto, q not available");
+                    _ultAbility.UseAbility(moves);
+                    await Await.Delay((int)(_ultAbility.FindCastPoint() * 1000.0f + Game.Ping + 200));
+                    MyHero.Attack(AutokillableTar);
+                    Await.Block("zaioAutoAttack", StormAuto);
+                }
+            }
+
+
 
 
             return false;
