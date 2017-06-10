@@ -283,7 +283,7 @@ namespace Zaio.Heroes
                 }
 
                 if(_qAbility.IsAbilityEnabled() && _qAbility.CanBeCasted() && !this.MyHero.HasModifier("modifier_storm_spirit_overload")
-                    && ((!_wAbility.CanBeCasted() && (MyHero.Mana <= _qAbility.GetAbilityData("Mana cost") + consumedMana)) || MyHero.Distance2D(target) <= _qAbility.GetAbilityData("Cast range")))
+                    && ((!_wAbility.CanBeCasted() && (MyHero.Mana <= _qAbility.GetAbilityData("Mana cost") + consumedMana)) || MyHero.Distance2D(target) <= 235))
                 {
                     this._qAbility.UseAbility();
                     await Await.Delay(GetAbilityDelay(_qAbility), tk);
