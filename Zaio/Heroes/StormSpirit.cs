@@ -38,7 +38,7 @@ namespace Zaio.Heroes
             try
             {
                 NativeMethods.BlockInput(true);
-                await Await.Delay(span);
+                await Task.Delay(span);
             }
             finally
             {
