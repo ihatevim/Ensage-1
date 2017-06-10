@@ -262,7 +262,8 @@ namespace Zaio.Heroes
 
                 if (_qAbility.IsAbilityEnabled() && _qAbility.CanBeCasted()
                     && _wAbility.IsAbilityEnabled() && _wAbility.CanBeCasted()
-                    && (qCost + wCost) <= myMana && !this.MyHero.HasModifier("modifier_storm_spirit_overload"))
+                    && (qCost + wCost) <= myMana && !this.MyHero.HasModifier("modifier_storm_spirit_overload")
+                    && target.IsMoving)
                 {
                     if(!hasAgha)
                     {
