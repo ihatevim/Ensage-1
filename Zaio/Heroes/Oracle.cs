@@ -221,7 +221,7 @@
 
                     if (_tarHeal != null && this._wAbility.CanBeCasted()
                         && !_tarHeal.HasModifier("modifier_oracle_fates_edict") && this.MyHero.Distance2D(_tarHeal) <= 800
-                        && Enabled(_tarHeal.Name))
+                        && Enabled(_tarHeal.Name) && _wAbility.GetManaCost(_wAbility.Level - 1) + _eAbility.GetManaCost(_wAbility.Level - 1) <= MyHero.Mana)
                     {
                         Log.Debug($"w {_tarHeal}");
                         this._wAbility.UseAbility(_tarHeal);
