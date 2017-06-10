@@ -25,26 +25,6 @@ namespace Zaio.Heroes
     [Hero(ClassId.CDOTA_Unit_Hero_StormSpirit)]
     internal class StormSpirit : ComboHero
     {
-        public partial class NativeMethods
-        {
-            [System.Runtime.InteropServices.DllImportAttribute("user32.dll", EntryPoint = "BlockInput")]
-            [return: System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.Bool)]
-            public static extern bool BlockInput([System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.Bool)] bool fBlockIt);
-
-        }
-
-        public static void BlockInput(int span)
-        {
-            try
-            {
-                NativeMethods.BlockInput(true);
-                Await.Delay(span);
-            }
-            finally
-            {
-                NativeMethods.BlockInput(false);
-            }
-        }
 
         private static readonly ILog Log = AssemblyLogs.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -77,7 +57,13 @@ namespace Zaio.Heroes
 
         private int minMana => this._minMana.GetValue<Slider>().Value;
 
-
+        private void PlayerOnExecuteOrder(Player Sender, ExecuteOrderEventArgs args)
+        {
+            if (args.IsPlayerInput)
+            {
+                args.Process = false;
+            }
+        }
 
         public override void OnLoad()
         {
@@ -163,9 +149,14 @@ namespace Zaio.Heroes
 
             if (this.MyHero.HasModifier("modifier_storm_spirit_overload") && AutokillableTar != null)
             {
+                Player.OnExecuteOrder += PlayerOnExecuteOrder;
                 MyHero.Attack(AutokillableTar);
-                BlockInput(900);
                 Await.Block("zaioAutoAttack", StormAuto);
+            }
+
+            if (!MyHero.HasModifier("modifier_storm_spirit_overload"))
+            {
+                Player.OnExecuteOrder -= PlayerOnExecuteOrder;
             }
 
             if (this._qAbility.IsKillstealAbilityEnabled() && this._qAbility.CanBeCasted() && !MyHero.HasModifier("modifier_storm_spirit_overload"))
