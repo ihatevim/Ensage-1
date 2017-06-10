@@ -171,7 +171,7 @@ namespace Zaio.Heroes
             if (this.MyHero.HasModifier("modifier_storm_spirit_overload") && AutokillableTar != null)
             {
                 MyHero.Attack(AutokillableTar);
-                BlockInput(900);
+                await BlockInput(500);
                 Await.Block("zaioAutoAttack", StormAuto);
             }
 
