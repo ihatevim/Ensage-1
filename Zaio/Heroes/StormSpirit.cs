@@ -33,12 +33,12 @@ namespace Zaio.Heroes
 
         }
 
-        public static void BlockInput(int span)
+        public static async Task BlockInput(int span)
         {
             try
             {
                 NativeMethods.BlockInput(true);
-                Await.Delay(span);
+                await Await.Delay(span);
             }
             finally
             {
