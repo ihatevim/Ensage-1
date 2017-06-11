@@ -299,7 +299,7 @@ namespace Zaio.Interfaces
         {
             var prioritizeEvade = ZaioMenu.ShouldRespectEvader;
             var tarSwitch = ZaioMenu.ShouldSwitch;
-            if (!ZaioMenu.ShouldLockTarget || Target == null || !Target.IsAlive && tarSwitch)
+            if (!ZaioMenu.ShouldLockTarget || Target == null || (!Target.IsAlive && tarSwitch))
             {
                 //Log.Debug($"Find new target");
                 // todo: more select0rs
