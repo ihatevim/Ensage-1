@@ -193,7 +193,7 @@ namespace Zaio.Heroes
         {
 
             var myHeroNetworkPosition = this.MyHero.NetworkPosition;
-            if (!await MoveOrBlinkToEnemy(target, tk, 480, 650))
+            if (!await MoveOrBlinkToEnemy(target, tk, 480, 480))
             {
                 if (!this.MyHero.IsSilenced() && this.MyHero.Distance2D(target) >= 480 && this.MyHero.Distance2D(target) <= maxYards)
                 {
@@ -216,7 +216,7 @@ namespace Zaio.Heroes
                             if (consumedMana <= MyHero.Mana && (MyHero.Mana - consumedMana >= minMana))
                             {
                                 this._ultAbility.UseAbility(moves);
-                                await Await.Delay(GetAbilityDelay(_ultAbility) + (int)(this.MyHero.GetTurnTime(pos) * 1000), tk);
+                                await Await.Delay((int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(moves)) * 2500 + Game.Ping), tk);
                                 MyHero.Attack(target);
                                 Await.Block("zaioAutoAttack", StormAuto);
                             }
@@ -232,7 +232,8 @@ namespace Zaio.Heroes
                             if (consumedMana <= MyHero.Mana && (MyHero.Mana - consumedMana >= minMana))
                             {
                                 this._ultAbility.UseAbility(pos);
-                                await Await.Delay(GetAbilityDelay(_ultAbility) + (int)(this.MyHero.GetTurnTime(pos) * 1000), tk);
+                                Log.Debug($"{(int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(pos)) * 2500 + Game.Ping)}");
+                                await Await.Delay((int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(pos)) * 2500 + Game.Ping), tk);
                                 MyHero.Attack(target);
                                 Await.Block("zaioAutoAttack", StormAuto);
                             }
