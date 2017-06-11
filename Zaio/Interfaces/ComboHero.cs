@@ -298,8 +298,8 @@ namespace Zaio.Interfaces
         protected override async Task Execute(CancellationToken token)
         {
             var prioritizeEvade = ZaioMenu.ShouldRespectEvader;
-
-            if (!ZaioMenu.ShouldLockTarget || Target == null || !Target.IsAlive)
+            var tarSwitch = ZaioMenu.ShouldSwitch;
+            if (!ZaioMenu.ShouldLockTarget || Target == null || !Target.IsAlive && tarSwitch)
             {
                 //Log.Debug($"Find new target");
                 // todo: more select0rs
@@ -316,7 +316,6 @@ namespace Zaio.Interfaces
                         Target = TargetSelector.HighestHealthPointsTarget(MyHero, 1000);
                         break;
                 }
-               
 
                 if (prioritizeEvade && !Utils.SleepCheck("Evader.Avoiding"))
                 {

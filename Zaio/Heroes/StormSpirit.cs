@@ -177,7 +177,7 @@ namespace Zaio.Heroes
                     var moves = Cock.InFront(AutokillableTar, 100);
                     Log.Debug($"Killable with auto, q not available");
                     _ultAbility.UseAbility(moves);
-                    await Await.Delay((int)(_ultAbility.FindCastPoint() * 1000.0f + Game.Ping + 200));
+                    await Await.Delay((int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(moves)) * 2500 + Game.Ping));
                     MyHero.Attack(AutokillableTar);
                     Await.Block("zaioAutoAttack", StormAuto);
                 }

@@ -53,6 +53,7 @@ namespace Zaio
         private static MenuItem _blockKillSteal;
         private static MenuItem _shouldUseBlinkDagger;
         private static MenuItem _shouldRespectEvader;
+        private static MenuItem _lockSwitch;
 
         // creep
         private static MenuItem _creepControlMode;
@@ -62,12 +63,14 @@ namespace Zaio
 
         // hotkeys
         private static MenuItem _comboKey;
+        
 
         public static Key ComboKey => KeyInterop.KeyFromVirtualKey((int) _comboKey.GetValue<KeyBind>().Key);
         public static bool ShouldUseOrbwalker => _orbwalker.GetValue<bool>();
         public static bool ShouldDisplayAttackRange => _displayAttackRange.GetValue<bool>();
         public static bool ShouldLockTarget => _lockTarget.GetValue<bool>();
         public static bool ShouldKillSteal => _killSteal.GetValue<bool>();
+        public static bool ShouldSwitch => _lockSwitch.GetValue<bool>();
         public static bool ShouldBlockKillStealWhileComboing => _blockKillSteal.GetValue<bool>();
         public static bool ShouldUseBlinkDagger => _shouldUseBlinkDagger.GetValue<bool>();
         public static bool ShouldRespectEvader => _shouldRespectEvader.GetValue<bool>();
@@ -124,6 +127,10 @@ namespace Zaio
             _shouldRespectEvader = new MenuItem("zaioRespectEvader", "Prioritize Evader").SetValue(true);
             _shouldRespectEvader.Tooltip = "Will disable the combo mode while the evader is active.";
             general.AddItem(_shouldRespectEvader);
+
+            _lockSwitch = new MenuItem("zaioTargetSwitch", "Target Switch").SetValue(true);
+            _lockSwitch.Tooltip = "Will disable combo after target is dead if off.";
+            general.AddItem(_lockSwitch);
 
             _targetSelector =
                 new MenuItem("zaioTargetSelector", "Target Selector").SetValue(
