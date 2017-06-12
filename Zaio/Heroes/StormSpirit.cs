@@ -216,7 +216,7 @@ namespace Zaio.Heroes
                             if (consumedMana <= MyHero.Mana && (MyHero.Mana - consumedMana >= minMana))
                             {
                                 this._ultAbility.UseAbility(moves);
-                                await Await.Delay((int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(moves)) * 2500 + Game.Ping), tk);
+                                await Await.Delay((int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(moves)) * 2250 + Game.Ping), tk);
                                 MyHero.Attack(target);
                                 Await.Block("zaioAutoAttack", StormAuto);
                             }
@@ -232,8 +232,8 @@ namespace Zaio.Heroes
                             if (consumedMana <= MyHero.Mana && (MyHero.Mana - consumedMana >= minMana))
                             {
                                 this._ultAbility.UseAbility(pos);
-                                Log.Debug($"{(int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(pos)) * 2500 + Game.Ping)}");
-                                await Await.Delay((int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(pos)) * 2500 + Game.Ping), tk);
+                                Log.Debug($"{(int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(pos)) * 2250 + Game.Ping)}");
+                                await Await.Delay((int)((_ultAbility.FindCastPoint() + MyHero.GetTurnTime(pos)) * 2250 + Game.Ping), tk);
                                 MyHero.Attack(target);
                                 Await.Block("zaioAutoAttack", StormAuto);
                             }
